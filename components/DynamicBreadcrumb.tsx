@@ -31,7 +31,7 @@ export const pathMap: any = {
   },
   edit: {
     name: "Edit",
-    href: null,
+    href: "",
   },
 };
 
@@ -42,18 +42,15 @@ interface DynamicBreadcrumbProps {
 interface PathWithDbObject {
   name: string;
   href?: string;
+  slug?: string;
 }
 
 export function DynamicBreadcrumb({ pathWithDb }: DynamicBreadcrumbProps) {
   const pathName = usePathname();
 
-  const pathArray = pathName.split("/").filter((path) => path);
-  const simulatedDBPath = {
-    name: "Slug Article DB data",
-    href: "",
-  };
+  console.log(pathWithDb);
 
-  pathWithDb = simulatedDBPath;
+  const pathArray = pathName.split("/").filter((path) => path);
 
   return (
     <Breadcrumb>
@@ -65,35 +62,46 @@ export function DynamicBreadcrumb({ pathWithDb }: DynamicBreadcrumbProps) {
         )}
 
         {pathArray.map((path, index) => {
-          const routeName: string = pathMap[path].name;
-          const routeHref: string = pathMap[path].href;
-
-          return (
-            <>
-              {index != pathArray.length - 1 ? (
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link
-                      href={routeHref || pathName}
-                      className="first-letter:uppercase "
-                    >
+          if (Object.keys(pathMap).includes(path)) {
+            const routeName: string = pathMap[path].name;
+            const routeHref: string = pathMap[path].href;
+            return (
+              <>
+                {index != pathArray.length - 1 ? (
+                  <BreadcrumbItem key={index}>
+                    <BreadcrumbLink asChild>
+                      <Link
+                        href={routeHref || pathName}
+                        className="first-letter:uppercase "
+                      >
+                        {routeName || path}
+                      </Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                ) : pathWithDb == null && index == pathArray.length - 1 ? (
+                  <BreadcrumbItem key={index}>
+                    <BreadcrumbPage className="first-letter:uppercase ">
                       {routeName || path}
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              ) : (
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="first-letter:uppercase ">
-                    {routeName || path}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              )}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                ) : (
+                  <BreadcrumbItem key={index}>
+                    <BreadcrumbLink asChild>
+                      <Link
+                        href={routeHref || pathName}
+                        className="first-letter:uppercase "
+                      >
+                        {routeName || path}
+                      </Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
 
-              {index !== pathArray.length - 1 && <BreadcrumbSeparator />}
-            </>
-          );
+                {index !== pathArray.length - 1 &&   <BreadcrumbSeparator />}
+              </>
+            );
+          }
         })}
-        {pathWithDb != null && <BreadcrumbSeparator />}
 
         {pathWithDb ? (
           <BreadcrumbItem>
