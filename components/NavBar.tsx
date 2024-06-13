@@ -35,6 +35,10 @@ export const path = [
     name: "Edit",
     href: "/dashboard/category/edit",
   },
+  {
+    name: "Edit With Slug",
+    href: "/dashboard/category/edit/slug-article-db-data",
+  },
 ];
 
 export const NavBar = () => {
